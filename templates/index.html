@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Dashboard</title>
+</head>
+<script src="{{url_for('static',filename='js/d3.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+
+<!--<script src="{{ url_for('static', filename='js/jplotly-2.8.3min.js') }}"></script>-->
+<!-- import plugin script -->
+<script src="static/js/Chart.min.js"></script>
+
+
+
+<!-- dropdown for selector-->
+<div class="container">
+<div class="col-xs-3">
+   <br>
+   <label> Choose the chart data</label>
+   <select class="form-control" id ='first_cat', onchange="updateChart()">
+      {% for key in selector_opts %}
+       <option value={{ loop.index - 1 }}>{{ key }}</option>
+       {% endfor %}
+   </select>
+   <br>
+</div>
+
+
+<!-- must load this after the selector is defined, or else won't run-->
+<!--<script src="{{ url_for('static', filename='js/plots.js') }}"></script>-->
+
+
+</div>
+
+<!-- Chart.js chart -->
+<h1>Simple Line Chart Dummy</h1>
+<!-- bar chart canvas element -->
+<canvas id="myChart" width="600" height="400"></canvas>
+<p id="caption">The chart is displaying a simple line chart.</p>
+<script>
+// Global parameters:
+// do not resize the chart canvas when its container does (keep at 600x400px)
+Chart.defaults.global.responsive = false;
+ 
+// define the chart data
+var sent_data = {{chart_list|safe}}
+console.log(sent_data[0].values)
+var chartValues = sent_data[document.getElementById('first_cat').value].values
+var chartLabels = sent_data[document.getElementById('first_cat').value].labels
+
+
+var chartData = {
+labels : chartLabels,
+datasets : [{
+label: document.getElementById('first_cat').value,
+fill: true,
+data : chartValues,
+spanGaps: false
+}]
+}
+// get chart canvas
+var ctx = document.getElementById("myChart").getContext("2d");
+ 
+// create the chart using the chart canvas
+var myChart = new Chart(ctx, {
+type: 'line',
+data: chartData,
+// used options to create custom tooltips function
+options: {
+   title: {
+                display: true,
+                text: document.getElementById('first_cat').value
+            },
+   tooltips: {
+      enabled: true,
+      mode: 'single',
+      callbacks: {
+         label: function(tooltipItems, data) {
+         return tooltipItems.yLabel + ' degrees';
+         }
+      }
+      },
+}
+});
+
+//updates chart title and type upon selections
+function updateChart() {
+      //save existing chart data and options
+      var mydata = myChart.data
+      var myopts = myChart.options
+
+      //get the updated values per dropdowns
+      console.log(mydata)
+      mydata.labels = sent_data[document.getElementById('first_cat').value].labels
+      mydata.datasets[0].data = sent_data[document.getElementById('first_cat').value].values
+      
+      // must delete original first
+     myChart.destroy();
+
+     //then rebulild with new values
+      myChart = new Chart(ctx, {
+				type: 'line',  // Select chart type from dropdown
+					data: mydata,
+               options: myopts
+				});
+
+			};
+
+</script>
