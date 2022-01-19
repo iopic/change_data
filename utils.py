@@ -15,6 +15,7 @@ def prep_data(df,val_col='Count',title_prefix=''):
 def special_processing(df, col_name,val_col):
     if col_name == 'some value':
         #do something
+        pass
     else:
         group_df = df.groupby([col_name]).size().reset_index(name=val_col)
 
@@ -48,7 +49,6 @@ def double_groupby(df,cat_col1, cat_col2, time_col = 'Date',val_col = 'Count',ex
         dfs.append(group_df.copy())
     return dfs
 
-time_groupby(df = df, time_col ='Date')
 
 def time_groupby(df,time_col,count_col='Count',exclude_cols=[]):
     """

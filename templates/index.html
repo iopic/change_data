@@ -6,10 +6,12 @@
 </head>
 <script src="{{url_for('static',filename='js/d3.min.js')}}"></script>
 <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+<script src="static/js/Chart.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static',filename= 'js/chartjs-plugin-colorschemes.js')}}"></script>
 
 <!--<script src="{{ url_for('static', filename='js/jplotly-2.8.3min.js') }}"></script>-->
 <!-- import plugin script -->
-<script src="static/js/Chart.min.js"></script>
+
 
 
 
@@ -81,6 +83,11 @@ options: {
          }
       }
       },
+   plugins: {
+      colorschemes: {
+         scheme: 'brewer.Paired12'
+      }
+   }
 }
 });
 
